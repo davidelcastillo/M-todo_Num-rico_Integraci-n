@@ -16,6 +16,33 @@ def integratrapecio_fi(xi,fi):
         suma = suma + untrapecio
     return(suma)
 
+def integrasimpson38_fi(xi,fi,tolera = 1e-10):
+    ''' sobre muestras de fi para cada xi
+        integral con método de Simpson 3/8
+        respuesta es np.nan para tramos desiguales,
+        no hay suficientes puntos.
+    '''
+    n = len(xi)
+    i = 0
+    suma = 0
+    while not(i>=(n-3)):
+        h  = xi[i+1]-xi[i]
+        h1 = (xi[i+2]-xi[i+1])
+        h2 = (xi[i+3]-xi[i+2])
+        dh = abs(h-h1)+abs(h-h2)
+        if dh<tolera:# tramos iguales
+            unS38 = fi[i]+3*fi[i+1]+3*fi[i+2]+fi[i+3]
+            unS38 = (3/8)*h*unS38
+            suma = suma + unS38
+        else:  # tramos desiguales
+            suma = 'tramos desiguales'
+        i = i + 3
+    if (i+1)<n: # incompleto, tramos por calcular
+        suma = 'tramos incompletos, faltan '
+        suma = suma +str(n-(i+1))+' tramos'
+    return(suma)
+
+
 # PROGRAMA -----------------
 # INGRESO
 # Definir los tiempos en minutos desde el inicio (07:30)
@@ -32,6 +59,14 @@ Area = integratrapecio_fi(tiempos,tasas)
 print('tramos: ',len(tiempos)-1)
 print('Cantidad de autos: ',Area)
 
+# PROCEDIMIENTO
+Area = integrasimpson38_fi(tiempos,tasas)
+
+# SALIDA
+print('tramos: ',len(tiempos)-1)
+print('Integral con Simpson 1/3: ',Area)
+if type(Area)==str:
+    print('  Revisar errores...')
 
 # GRAFICA
 # Puntos de muestra
