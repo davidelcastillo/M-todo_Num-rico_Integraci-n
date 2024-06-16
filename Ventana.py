@@ -1,23 +1,66 @@
-from Trapecio import *
+import tkinter as tk
+import threading
+from Ingreso_fechas import*
 
-# Solicitar al usuario la cantidad de datos a ingresar
-num_datos = int(input("Ingrese la cantidad de datos: "))
-tiempo_duracion = int(input("Ingrese la duracion en min del intervalo: "))
+def mostrar_ventana(Area_trapecio_manual_a, Area_trapecio_compuesto_a, Error_trapecio_compuesto_a, 
+                    Area_trapecio_manual_b, Area_trapecio_compuesto_b, Error_trapecio_compuesto_b, 
+                    tiempo_a, tiempo_b, a_inc, a_fin, b_inc, b_fin):
+    # Función que crea la ventana y la ejecuta en un hilo separado
+    def crear_ventana():
+        # Crear la ventana principal
+        root = tk.Tk()
+        root.title("Estimaciones")
+        root.configure(bg='#f0f0f0')  # Fondo de la ventana
 
-tiempos = []
-tasas = []
+        # Crear el texto de la primera sección
+        text_a = (
+            f"ESTIMACIONES\n"
+            f"Desde {a_inc} a {a_fin} :\n"
+            f"Tramos: {len(tiempo_a) - 1}\n"
+            f"Cantidad de autos (Trapecio manual): {Area_trapecio_manual_a}\n"
+            f"Cantidad de autos (Trapecio Compuesto): {Area_trapecio_compuesto_a}\n"
+            f"Estimación del error (Trapecio Compuesto): {Error_trapecio_compuesto_a}\n"
+            f"Diferencia Trapecio manual y Trapecio Compuesto: {abs(Area_trapecio_manual_a - Area_trapecio_compuesto_a)}\n"
+        )
 
-# Solicitar al usuario los tiempos y las tasas vehiculares
-# for i in range(num_datos):
-#      tiempo = float(input(f"Ingrese el tiempo en minutos para el dato {i + 1}: "))
-#      tasa = float(input(f"Ingrese la tasa de vehículos (vehículos cada 4 minutos) para el dato {i + 1}: "))
-#      tiempos.append(tiempo)
-#      tasas.append(tasa)
+        # Crear el texto de la segunda sección
+        text_b = (
+            f"Desde {b_inc} a {b_fin} :\n"
+            f"Tramos: {len(tiempo_b) - 1}\n"
+            f"Cantidad de autos (Trapecio manual): {Area_trapecio_manual_b}\n"
+            f"Cantidad de autos (Trapecio Compuesto): {Area_trapecio_compuesto_b}\n"
+            f"Estimación del error (Trapecio Compuesto): {Error_trapecio_compuesto_b}\n"
+            f"Diferencia Trapecio manual y Trapecio Compuesto: {abs(Area_trapecio_manual_b - Area_trapecio_compuesto_b)}\n"
+        )
 
-# Definir los tiempos en minutos desde el inicio (07:30)
-tiempos = [0, 15, 30, 45, 75, 105]
+        # Crear un widget de texto
+        text_widget = tk.Text(root, wrap="word", bg='#f0f0f0', font=('Helvetica', 12), borderwidth=0)
+        text_widget.insert("1.0", text_a + "\n" + text_b)
+        text_widget.config(state="disabled", fg='#333333')  # Hacer que el texto sea solo de lectura y cambiar el color del texto
+        text_widget.pack(padx=10, pady=10)
 
-# Definir las tasas vehiculares (vehículos cada 4 min)
-tasas = [18, 24, 14, 24, 21, 9]
+        # Ejecutar el bucle principal de la ventana
+        root.mainloop()
 
-trapecio (tiempos,tasas, num_datos, tiempo_duracion)
+    # Crear y comenzar un hilo para la ventana de tkinter
+    hilo_ventana = threading.Thread(target=crear_ventana)
+    hilo_ventana.start()
+
+# Ejemplo de uso
+if __name__ == "__main__":
+    Area_trapecio_manual_a = 100
+    Area_trapecio_compuesto_a = 105
+    Error_trapecio_compuesto_a = 0.05
+    Area_trapecio_manual_b = 200
+    Area_trapecio_compuesto_b = 195
+    Error_trapecio_compuesto_b = 0.025
+    tiempo_a = [1, 2, 3, 4, 5]
+    tiempo_b = [1, 2, 3, 4]
+
+    mostrar_ventana(Area_trapecio_manual_a, Area_trapecio_compuesto_a, Error_trapecio_compuesto_a, 
+                    Area_trapecio_manual_b, Area_trapecio_compuesto_b, Error_trapecio_compuesto_b, 
+                    tiempo_a, tiempo_b)
+
+    # Aquí puedes continuar con el resto del programa sin que la ventana detenga la ejecución
+    print("La ventana se está ejecutando en un hilo separado.")
+
