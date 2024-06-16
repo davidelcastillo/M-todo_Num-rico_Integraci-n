@@ -63,3 +63,4 @@ if __name__ == "__main__":
 
     # Aquí puedes continuar con el resto del programa sin que la ventana detenga la ejecución
     print("La ventana se está ejecutando en un hilo separado.")
+
